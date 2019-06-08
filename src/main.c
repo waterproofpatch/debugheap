@@ -2,6 +2,8 @@
 #include <assert.h>
 #include "debug_heap.h"
 
+#define DEBUG_HEAP
+
 #ifdef DEBUG_HEAP
 #define malloc debug_heap_malloc
 #define free debug_heap_free
