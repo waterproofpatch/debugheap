@@ -7,12 +7,12 @@
 
 int main(int argc, char** argv)
 {
-    char* ptr = malloc(sizeof(char));
+    unsigned char* ptr = malloc(sizeof(unsigned char));
     assert(NULL != ptr);
     ptr[0] = 'c';
     printf("%p %p\n", ptr, ptr - 1);
-    *(char*)(ptr - 1) = 'd';
-    assert(ptr[-1] == 'd');
+    *(unsigned char*)(ptr - 1) = 0xff;
+    assert(ptr[-1] == 0xff);
     assert(ptr[0] == 'c');
     free(ptr);
     return 0;
