@@ -5,24 +5,6 @@
 
 #include "debug_heap.h"
 
-#define DEBUG_HEAP_HEADER_COOKIE 0x11223344
-#define DEBUG_HEAP_FOOTER_COOKIE 0x44332211
-
-typedef struct _heap_info_t
-{
-    unsigned int num_allocs;
-    unsigned int num_frees;
-    unsigned int cur_alloc;
-} heap_info_t;
-
-typedef struct _heap_meta_t
-{
-    unsigned int  size;
-    unsigned int  alloc_num;
-    unsigned int  header_cookie;
-    unsigned char payload[0];
-} heap_meta_t;
-
 heap_info_t* g_heap_info = NULL;
 
 static void debug_heap_init()
