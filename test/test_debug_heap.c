@@ -36,5 +36,8 @@ void testDebugHeapAlloc()
                                 &meta);
     char* p = debug_heap_malloc(10);
     TEST_ASSERT_NOT_NULL(p);
+    heap_meta_t* p_meta = (heap_meta_t*)((char*)p - sizeof(heap_meta_t));
+    TEST_ASSERT_EQUAL(p_meta->size, 10);
+    TEST_ASSERT_EQUAL(p_meta->alloc_num, 1);
 }
 
