@@ -17,10 +17,10 @@ typedef struct _heap_info_t
 
 typedef struct _heap_meta_t
 {
-    unsigned int   size;
-    unsigned int   alloc_num;
-    unsigned int   header_cookie;
-    unsigned char* payload[0];
+    unsigned int  size;
+    unsigned int  alloc_num;
+    unsigned int  header_cookie;
+    unsigned char payload[0];
 } heap_meta_t;
 
 heap_info_t* g_heap_info = NULL;
@@ -62,11 +62,6 @@ void debug_heap_free(void* ptr)
     heap_meta_t* meta =
         (heap_meta_t*)((unsigned char*)ptr - sizeof(heap_meta_t));
     g_heap_info->num_frees++;
-    printf("heap header cookie is %p=0x%08x\n", &meta->header_cookie,
-           meta->header_cookie);
-    printf("payload begins at %p\n", meta->payload);
-    printf("%p=0x%08x\n", meta->payload - 1,
-           *(unsigned char*)meta->payload - 1);
     assert(meta->header_cookie == DEBUG_HEAP_HEADER_COOKIE);
     assert(*(unsigned int*)((unsigned char*)meta + meta->size +
                             sizeof(heap_meta_t)) == DEBUG_HEAP_FOOTER_COOKIE);
