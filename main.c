@@ -12,7 +12,6 @@ int main(int argc, char** argv)
     ptr[0] = 'c';
     printf("%p %p\n", ptr, ptr - 1);
     *(unsigned char*)(ptr - 1) = 0xff;
-    assert(ptr[-1] == 0xff);
     assert(ptr[0] == 'c');
     free(ptr);
     return 0;

@@ -59,14 +59,17 @@ void* debug_heap_malloc(size_t size)
 
 void debug_heap_free(void* ptr)
 {
-    heap_meta_t* meta = (heap_meta_t*)((char*)ptr - sizeof(heap_meta_t));
+    heap_meta_t* meta =
+        (heap_meta_t*)((unsigned char*)ptr - sizeof(heap_meta_t));
     g_heap_info->num_frees++;
+    printf("heap header cookie is %p=0x%08x\n", &meta->header_cookie,
+           meta->header_cookie);
+    printf("payload begins at %p\n", meta->payload);
+    printf("%p=0x%08x\n", meta->payload - 1,
+           *(unsigned char*)meta->payload - 1);
     assert(meta->header_cookie == DEBUG_HEAP_HEADER_COOKIE);
     assert(*(unsigned int*)((unsigned char*)meta + meta->size +
                             sizeof(heap_meta_t)) == DEBUG_HEAP_FOOTER_COOKIE);
-    printf("meta footer is 0x%08x\n",
-           *(unsigned int*)((unsigned char*)meta + meta->size +
-                            sizeof(heap_meta_t)));
     printf("total frees: %u freeing %u, size %u\n", g_heap_info->num_frees,
            meta->alloc_num, meta->size);
 
