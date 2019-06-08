@@ -1,11 +1,33 @@
-BINDIR=build
-SRC_FILES=main.c debug_heap.c
+SRC_DIR=src
+BIN_DIR=bin
+DOC_DIR=doc
+EXEC_NAME=main
 
-all: dirs
-	gcc $(SRC_FILES) -o $(BINDIR)/main
+.PHONY: test
+	test
 
-run:
-	./$(BINDIR)/main
+.PHONY: doc
+	doc
 
-dirs:
-	mkdir -p $(BINDIR)
+all: setup doc
+	gcc -g $(SRC_DIR)/*.c -o $(BIN_DIR)/$(EXEC_NAME)
+
+doc:
+	@doxygen Doxyfile 
+
+run: all
+	$(BIN_DIR)/$(EXEC_NAME)
+
+
+setup:
+	@mkdir -p $(BIN_DIR)
+
+test: setup
+	@mkdir -p test/support
+	@ceedling clobber
+	@ceedling gcov:all
+	@ceedling utils:gcov
+
+clean:
+	@rm -rf $(BIN_DIR)/
+	@rm -rf $(DOC_DIR)/

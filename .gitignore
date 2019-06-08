@@ -1,1 +1,7 @@
+# build artifacts
+doc
+bin
 build
+
+# editor artifacts
+.vscode
