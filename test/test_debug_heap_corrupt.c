@@ -17,33 +17,35 @@ void tearDown()
 }
 
 /**
-  Test that we can allocate memory from the debug heap allocator
+  Test that we detect footer corruption in a block
   */
-void testDebugHeapAlloc()
+void testDebugHeapAllocCorruptFooter()
 {
     heap_meta_t* meta = malloc(sizeof(heap_meta_t) + 10);
     stub_malloc_ExpectAndReturn(sizeof(heap_meta_t) + 10 + sizeof(unsigned int),
                                 meta);
+    stub_check_func_Expect(__LINE__ + 1, "Footer corrupted");
     char* p = debug_heap_malloc(10, stub_malloc, __LINE__);
 
     TEST_ASSERT_NOT_NULL(p);
+    p[11] = 0xff;   // smash into footer
 
-    heap_meta_t* p_meta = (heap_meta_t*)((char*)p - sizeof(heap_meta_t));
-
-    TEST_ASSERT_EQUAL(p_meta->size, 10);
-    TEST_ASSERT_EQUAL(p_meta->alloc_num, 1);
-
-    free(meta);
+    debug_heap_free(p, stub_free, stub_check_func);
 }
 
 /**
-  Test that we get a null ptr back if we fail to allocate requisite memory
+  Test that we detect header corruption in a block
   */
-void testDebugHeapAllocFail()
+void testDebugHeapAllocCorruptHeader()
 {
+    heap_meta_t* meta = malloc(sizeof(heap_meta_t) + 10);
     stub_malloc_ExpectAndReturn(sizeof(heap_meta_t) + 10 + sizeof(unsigned int),
-                                NULL);
+                                meta);
+    stub_check_func_Expect(__LINE__ + 1, "Header corrupted");
     char* p = debug_heap_malloc(10, stub_malloc, __LINE__);
 
-    TEST_ASSERT_NULL(p);
+    TEST_ASSERT_NOT_NULL(p);
+    p[-1] = 0xff;   // smash into footer
+
+    debug_heap_free(p, stub_free, stub_check_func);
 }

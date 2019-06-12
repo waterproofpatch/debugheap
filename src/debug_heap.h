@@ -17,11 +17,16 @@ typedef struct _heap_meta_t
 {
     unsigned int  size;
     unsigned int  alloc_num;
+    unsigned int  line;   // line the allocation was made
     unsigned int  header_cookie;
     unsigned char payload[0];
 } heap_meta_t;
 
-void* debug_heap_malloc(size_t size, void* (*malloc_fptr)(size_t size));
-void  debug_heap_free(void* ptr, void (*free_fptr)(void* ptr));
+void* debug_heap_malloc(size_t size,
+                        void* (*malloc_fptr)(size_t size),
+                        unsigned int line);
+void  debug_heap_free(void* ptr,
+                      void (*free_fptr)(void* ptr),
+                      void (*check_fptr)(unsigned int line, char* msg));
 
 #endif

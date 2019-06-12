@@ -5,5 +5,6 @@
 
 void* stub_malloc(size_t size);
 void  stub_free(void* ptr);
+void  stub_check_func(unsigned int line, char* msg);
 
 #endif

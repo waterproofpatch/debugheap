@@ -10,9 +10,14 @@
 
 void* allocated_ptr = NULL;
 
+void check_func(unsigned int line, char* msg)
+{
+    printf("HeapCheck on line %d: %s\n", line, msg);
+}
+
 void setUp()
 {
-    allocated_ptr = debug_heap_malloc(10, malloc);
+    allocated_ptr = debug_heap_malloc(10, malloc, __LINE__);
 }
 
 void tearDown()
@@ -25,5 +30,5 @@ void tearDown()
 void testDebugHeapFree()
 {
     stub_free_Expect((char*)allocated_ptr - sizeof(heap_meta_t));
-    debug_heap_free(allocated_ptr, stub_free);
+    debug_heap_free(allocated_ptr, stub_free, check_func);
 }

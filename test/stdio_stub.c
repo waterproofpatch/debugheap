@@ -11,3 +11,8 @@ void stub_free(void* ptr)
 {
     free(ptr);
 }
+
+void stub_check_func(unsigned int line, char* msg)
+{
+    return;
+}
