@@ -5,8 +5,8 @@
 #define DEBUG_HEAP
 
 #ifdef DEBUG_HEAP
-#define malloc debug_heap_malloc
-#define free debug_heap_free
+#define malloc(s) debug_heap_malloc(s, malloc)
+#define free(p) debug_heap_free(p, free)
 #endif
 
 int main(int argc, char** argv)
