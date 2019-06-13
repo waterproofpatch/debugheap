@@ -1,3 +1,5 @@
+#include <stddef.h>
+
 #include "list.h"
 
 unsigned int list_foreach(list_t* list,
