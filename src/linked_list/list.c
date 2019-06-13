@@ -13,6 +13,7 @@ unsigned int list_foreach(list_t* list,
         {
             return num_processed;
         }
+        cur = cur->next;
     }
     return num_processed;
 }
@@ -76,7 +77,8 @@ char list_remove(list_t* list, void* data, void (*free_fptr)(void* ptr))
             free_fptr(cur);
             return 1;
         }
-        cur = cur->next;
+        prev = cur;
+        cur  = cur->next;
     }
     return 0;
 }

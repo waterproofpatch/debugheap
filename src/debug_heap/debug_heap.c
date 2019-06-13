@@ -24,9 +24,8 @@ unsigned int debug_heap_check_outstanding_allocs(
     {
         return 0;
     }
-    list_foreach(g_heap_info.outstanding_allocations, (void*)check_alloc_fptr,
-                 debug_heap_check_proxy);
-    return 0;
+    return list_foreach(g_heap_info.outstanding_allocations,
+                        (void*)check_alloc_fptr, debug_heap_check_proxy);
 }
 
 void* debug_heap_malloc(size_t size,

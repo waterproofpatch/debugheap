@@ -26,7 +26,7 @@ unsigned int list_foreach_stub(list_t* list,
 {
     TEST_ASSERT_EQUAL(list, g_heap_info.outstanding_allocations);
     TEST_ASSERT_EQUAL(check_func, context);
-    return 0;
+    return 2;
 }
 
 void setUp()
@@ -55,7 +55,7 @@ void testDebugHeapCheckOutstandingAllocs()
     g_heap_info.outstanding_allocations = malloc(sizeof(list_t));
     list_foreach_StubWithCallback(
         (CMOCK_list_foreach_CALLBACK)list_foreach_stub);
-    TEST_ASSERT_EQUAL(debug_heap_check_outstanding_allocs(check_func), 0);
+    TEST_ASSERT_EQUAL(debug_heap_check_outstanding_allocs(check_func), 2);
     TEST_ASSERT_FALSE(was_called);
     free(g_heap_info.outstanding_allocations);
 }

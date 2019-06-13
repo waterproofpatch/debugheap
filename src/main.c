@@ -8,7 +8,7 @@ void check_func(unsigned int line, char* msg)
     printf("HeapCheck on line %d: %s\n", line, msg);
 }
 
-void check_alloc_func(unsigned line, unsigned int size)
+void check_outstanding_alloc(unsigned line, unsigned int size)
 {
     printf("outstanding allocation from line %d, size %d\n", line, size);
 }
@@ -21,10 +21,13 @@ void check_alloc_func(unsigned line, unsigned int size)
 
 int main(int argc, char** argv)
 {
-    unsigned char* ptr = malloc(sizeof(unsigned char));
-    assert(NULL != ptr);
-    ptr[0] = 'c';
-    assert(ptr[0] == 'c');
-    free(ptr);
+    assert(0 == debug_heap_check_outstanding_allocs(check_outstanding_alloc));
+    unsigned char* ptr1 = malloc(sizeof(unsigned char));
+    unsigned char* ptr2 = malloc(sizeof(unsigned char));
+    assert(2 == debug_heap_check_outstanding_allocs(check_outstanding_alloc));
+    free(ptr1);
+    assert(1 == debug_heap_check_outstanding_allocs(check_outstanding_alloc));
+    free(ptr2);
+    assert(0 == debug_heap_check_outstanding_allocs(check_outstanding_alloc));
     return 0;
 }
