@@ -9,9 +9,23 @@ heap_info_t g_heap_info = {.num_allocs              = 0,
                            .cur_alloc               = 0,
                            .outstanding_allocations = NULL};
 
+static char debug_heap_check_proxy(void* context, void* data)
+{
+    void (*check_alloc_fptr)(unsigned int, unsigned int) = context;
+    heap_meta_t* meta                                    = (heap_meta_t*)data;
+    check_alloc_fptr(meta->line, meta->size);
+    return 1;
+}
+
 unsigned int debug_heap_check_outstanding_allocs(
     void (*check_alloc_fptr)(unsigned int line, unsigned int size))
 {
+    if (!g_heap_info.outstanding_allocations)
+    {
+        return 0;
+    }
+    list_foreach(g_heap_info.outstanding_allocations, (void*)check_alloc_fptr,
+                 debug_heap_check_proxy);
     return 0;
 }
 
