@@ -16,3 +16,8 @@ void stub_check_func(unsigned int line, char* msg)
 {
     return;
 }
+
+void stub_check_outstanding_alloc(unsigned int line, unsigned int size)
+{
+    return;
+}

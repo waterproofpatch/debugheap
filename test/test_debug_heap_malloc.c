@@ -4,6 +4,7 @@
 
 // mock our stub
 #include "mock_stdio_stub.h"
+#include "mock_list.h"
 
 // code under test
 #include "debug_heap.h"
@@ -21,9 +22,12 @@ void tearDown()
   */
 void testDebugHeapAlloc()
 {
+    list_t       list;
     heap_meta_t* meta = malloc(sizeof(heap_meta_t) + 10);
+    list_init_ExpectAndReturn(stub_malloc, &list);
     stub_malloc_ExpectAndReturn(sizeof(heap_meta_t) + 10 + sizeof(unsigned int),
                                 meta);
+    list_add_ExpectAndReturn(&list, meta, stub_malloc, 1);
     char* p = debug_heap_malloc(10, stub_malloc, __LINE__);
 
     TEST_ASSERT_NOT_NULL(p);

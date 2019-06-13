@@ -1,16 +1,28 @@
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
-#include <assert.h>
 
 #include "debug_heap.h"
+#include "list.h"
 
-heap_info_t g_heap_info = {0};
+heap_info_t g_heap_info = {.num_allocs              = 0,
+                           .num_frees               = 0,
+                           .cur_alloc               = 0,
+                           .outstanding_allocations = NULL};
+
+unsigned int debug_heap_check_outstanding_allocs(
+    void (*check_alloc_fptr)(unsigned int line, unsigned int size))
+{
+    return 0;
+}
 
 void* debug_heap_malloc(size_t size,
                         void* (*malloc_fptr)(size_t size),
                         unsigned int line)
 {
+    if (!g_heap_info.outstanding_allocations)
+    {
+        g_heap_info.outstanding_allocations = list_init(malloc_fptr);
+    }
     heap_meta_t* meta =
         malloc_fptr(sizeof(heap_meta_t) + size + sizeof(unsigned int));
     if (!meta)
@@ -24,9 +36,7 @@ void* debug_heap_malloc(size_t size,
     meta->header_cookie = DEBUG_HEAP_HEADER_COOKIE;
     *(unsigned int*)((unsigned char*)meta + sizeof(heap_meta_t) + size) =
         DEBUG_HEAP_FOOTER_COOKIE;
-    printf(
-        "DEBUG_HEAP_MALLOC: total allocs: %u alloc num %u, size %u, line %u\n",
-        g_heap_info.num_allocs, meta->alloc_num, meta->size, meta->line);
+    list_add(g_heap_info.outstanding_allocations, meta, malloc_fptr);
     return meta->payload;
 }
 
@@ -48,7 +58,14 @@ void debug_heap_free(void* ptr,
         return;
     }
     g_heap_info.num_frees++;
-    printf("DEBUG_HEAP_FREE: total frees: %u freeing %u, size %u, line %u\n",
-           g_heap_info.num_frees, meta->alloc_num, meta->size, meta->line);
+    list_remove(g_heap_info.outstanding_allocations, meta, free_fptr);
+    if (g_heap_info.num_frees == g_heap_info.num_allocs)
+    {
+        if (g_heap_info.outstanding_allocations)
+        {
+            list_destroy(g_heap_info.outstanding_allocations, free_fptr);
+            g_heap_info.outstanding_allocations = NULL;
+        }
+    }
     return free_fptr(meta);
 }

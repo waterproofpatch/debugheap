@@ -1,4 +1,6 @@
 SRC_DIR=src
+DEBUG_HEAP_DIR=$(SRC_DIR)/debug_heap
+LIST_DIR=$(SRC_DIR)/linked_list
 BIN_DIR=bin
 DOC_DIR=doc
 EXEC_NAME=main
@@ -10,7 +12,7 @@ EXEC_NAME=main
 	doc
 
 all: setup doc
-	gcc -g $(SRC_DIR)/*.c -o $(BIN_DIR)/$(EXEC_NAME)
+	gcc -g $(SRC_DIR)/*.c $(LIST_DIR)/*.c $(DEBUG_HEAP_DIR)/*.c -I $(LIST_DIR) -I $(DEBUG_HEAP_DIR) -o $(BIN_DIR)/$(EXEC_NAME)
 
 doc:
 	@doxygen Doxyfile 
