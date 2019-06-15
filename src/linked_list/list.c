@@ -35,7 +35,7 @@ char list_add(list_t* list, void* data, void* (*malloc_fptr)(size_t size))
 {
     if (!list->head)
     {
-        list->head = malloc_fptr(sizeof(node_t*));
+        list->head = malloc_fptr(sizeof(node_t));
         if (!list->head)
         {
             return 0;
@@ -49,7 +49,7 @@ char list_add(list_t* list, void* data, void* (*malloc_fptr)(size_t size))
     {
         cur = cur->next;
     }
-    cur->next = malloc_fptr(sizeof(node_t*));
+    cur->next = malloc_fptr(sizeof(node_t));
     if (!cur->next)
     {
         return 0;
